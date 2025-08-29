@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -o errexit  # Exit script when a command exits with non-zero status
+set -o errtrace # Exit on error inside any functions or sub-shells
+set -o nounset  # Exit script on use of an undefined variable
+set -o pipefail # Return exit status of the last command in the pipe that failed
+
+readonly EX_OK=0                # Successful termination
+readonly EX_UNKNOWN=1           # Unknown error occurred
+
+usage() {
+	echo "usage: $0 COMMAND"
+	echo
+	echo "Manage php source tarball lifecycle."
+	echo
+	echo "Commands:"
+	echo "   extract  extract php source tarball into directory ${PHP_SRC_DIR} if not already done."
+	echo "   delete   delete extracted php source located into ${PHP_SRC_DIR} if not already done."
+	echo
+}
+
+case "${1:-}" in
+	extract)
+		mkdir -p "${PHP_SRC_DIR}"
+        if [[ ! -f "${PHP_SRC_DIR}/.docker-extracted" ]]; then
+            docker-package-download -o "${PHP_SRC_FILE}" "https://www.php.net/distributions/php-${PHP_VERSION}.tar.gz"
+            tar --strip-components=1 -C "${PHP_SRC_DIR}" -xzf "${PHP_SRC_FILE}"
+            touch "${PHP_SRC_DIR}/.docker-extracted"
+        fi
+		;;
+
+	delete)
+		rm -rf "${PHP_SRC_DIR}"
+		rm -rf "${PHP_SRC_FILE}"
+		rm -rf "${PHP_SRC_DIR}/.docker-extracted"
+		;;
+
+	*)
+		usage
+		exit ${EX_UNKNOWN}
+		;;
+esac

@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+set -o errexit  # Exit script when a command exits with non-zero status
+set -o errtrace # Exit on error inside any functions or sub-shells
+set -o nounset  # Exit script on use of an undefined variable
+set -o pipefail # Return exit status of the last command in the pipe that failed
+
+declare -a pecl_build_ext=()
+
+readonly EX_OK=0                # Successful termination
+readonly EX_UNKNOWN=1           # Unknown error occured
+
+usage() {
+	echo "usage: $0 [-jN] pecl-ext-name [pecl-ext-name ...]"
+	echo "   ie: $0 xdebug imagick"
+	echo "       $0 xdebug=2.6.1  imagick=3.4.3"
+	echo "       $0 -j$(nproc) xdebug=2.6.1 imagick=3.4.3"
+	echo
+	echo
+	echo "Possible values for pecl-ext-name:"
+	echo $(pecl remote-list | tail -n +4 | awk '{print $1}' | sort | xargs)
+	echo
+	echo "Some of the above modules are maybe already compiled into PHP; please check"
+	echo "the output of "php -i" to see which modules are already loaded."
+}
+
+opts="$(getopt -o 'h?j:' --long 'help,jobs:' -- "$@" || { usage >&2 && false; })"
+eval set -- "$opts"
+
+j=1
+while true; do
+	flag="$1"
+	shift
+	case "$flag" in
+		--help|-h|'-?') usage && exit 0 ;;
+		--jobs|-j) j="$1" && shift ;;
+		--) break ;;
+		*)
+			{
+				echo "error: unknown flag: $flag"
+				usage
+			} >&2
+			exit 1
+			;;
+	esac
+done
+
+# prefer user supplied CFLAGS, but default to our PHP_CFLAGS
+: "${CFLAGS:=$PHP_CFLAGS}"docker
+: "${CPPFLAGS:=$PHP_CPPFLAGS}"
+: "${LDFLAGS:=$PHP_LDFLAGS}"
+: "${DEBIAN_FRONTEND:-noninteractive}"
+export CFLAGS CPPFLAGS LDFLAGS DEBIAN_FRONTEND
+
+if [[ ! -d ${PHP_SRC_DIR} ]]; then
+    docker-install-requirements phpize
+	docker-php-source extract
+	touch ${PHP_SRC_DIR}/.docker-delete-me
+fi
+
+for ext in "$@"; do
+    pecl_build_ext+=($ext)
+done
+
+echo "${pecl_build_ext[@]}"
+if [[ ${#pecl_build_ext[@]} -eq 0 ]]; then
+	usage >&2
+	exit 1
+else
+    pecl channel-update pecl.php.net
+fi
+
+for pecl_ext in ${pecl_build_ext[@]}; do
+    echo ${pecl_ext}
+	yes '' | pecl install -f ${pecl_ext} || EXIT_CODE=$? && true;
+	if [[ "${EXIT_CODE}" != "141" && "${EXIT_CODE}" != "0" ]]; then
+        exit "${EX_UNKNOWN}"
+    fi
+done
+
+exit "${EX_OK}"
