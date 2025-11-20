@@ -2,9 +2,21 @@
 
 This Repo contains the build instructions for the PHP base image (bullseye and bookworm). All PHP images should inherit from this image.
 
+## build image
+
+cd src/trixie/src &&  docker buildx create --use &&  docker buildx build --progress=plain --platform linux/amd64,linux/arm64 --push -t docker.io/openmage/php-base:trixie .
+
+
 ## Documentation
 
 This image is automatically build with following cron expression `0 0 * * *`.
+
+## Releases
+
+- [JPEG](https://github.com/mozilla/mozjpeg/releases)
+- [TIFF](https://libtiff.gitlab.io/libtiff/releases/index.html)
+- [WEBP](http://downloads.webmproject.org/releases/webp/index.html)
+- [JPEG](https://github.com/uclouvain/openjpeg/releases/)
 
 ### Environment vars
 
@@ -16,6 +28,13 @@ This image is automatically build with following cron expression `0 0 * * *`.
 ## Changelog
 
 All notable changes to this project will be documented in this section.
+
+### 2025-11-20
+
+- updated jpeg to 2.5.4
+- updated Tiff to 4.7.1
+- updated WebP to 1.6.0
+- updated Imagick to 7.1.2-8
 
 ### 2020-02-24
 

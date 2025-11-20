@@ -3,6 +3,7 @@ FROM openmage/debian:bookworm-latest
 COPY root /
 
 ## configure default environment stuff and file permissions
+## block packages from being installed
 RUN set -xe; \
     chmod 755 /usr/local/bin/*; \
     mkdir /home/www-data; \
@@ -10,7 +11,6 @@ RUN set -xe; \
     chown www-data:www-data /home/www-data; \
     usermod -d /home/www-data www-data; \
     \
-        ## block packages from being installed
     	{ \
     		echo 'Package: libjpeg*'; \
     		echo 'Pin: release *'; \
@@ -33,19 +33,19 @@ ARG IMAGICK_BUILD_REQUIREMENTS="curl cmake gcc libtool libedit-dev liblcms2-dev 
 ARG IMAGICK_BUILD_REQUIREMENTS_EXTRA=""
 ARG IMAGICK_EXTRA_CONFIGURE_ARGS=""
 
-ARG MOZJPEG_VERSION="4.1.1"
+ARG MOZJPEG_VERSION="4.1.2"
 ARG MOZJPEG_EXTRA_CONFIGURE_ARGS=""
 
-ARG TIFF_VERSION="4.7.0"
+ARG TIFF_VERSION="4.7.1"
 ARG TIFF_EXTRA_CONFIGURE_ARGS=""
 
-ARG WEBP_VERSION="1.5.0"
+ARG WEBP_VERSION="1.6.0"
 ARG WEBP_EXTRA_CONFIGURE_ARGS=""
 
-ARG IMAGICK_VERSION="7.1.1-44"
+ARG IMAGICK_VERSION="7.1.2-8"
 ARG IMAGICK_EXTRA_CONFIGURE_ARGS=""
 
-ARG OPENJPEG_VERSION="2.5.3"
+ARG OPENJPEG_VERSION="2.5.4"
 
 ## configure imagick and the dependencies
 RUN set -xe; \
