@@ -29,6 +29,10 @@ This image is automatically build with following cron expression `0 0 * * *`.
 
 All notable changes to this project will be documented in this section.
 
+### 2026-04-01
+- updated MozJPEG to 4.1.1
+
+
 ### 2025-11-20
 
 - updated jpeg to 2.5.4
