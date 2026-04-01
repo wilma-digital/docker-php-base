@@ -1,4 +1,4 @@
-FROM openmage/debian:trixie-latest
+FROM wilmadigital/debian:trixie-latest
 
 COPY root /
 

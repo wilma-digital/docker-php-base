@@ -1,4 +1,4 @@
-FROM openmage/debian:bookworm-latest
+FROM wilmadigital/debian:bookworm-latest
 
 COPY root /
 

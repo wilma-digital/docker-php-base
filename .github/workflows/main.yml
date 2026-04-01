@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [ 'bullseye', 'bookworm', 'trixie' ]
+        version: [ 'bookworm', 'trixie' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,6 +31,6 @@ jobs:
         with:
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: openmage/php-base:${{ matrix.version }}-latest
+          tags: wilmadigital/php-base:${{ matrix.version }}-latest
           context: ./src/${{ matrix.version }}/src
           file: ./src/${{ matrix.version }}/src/Dockerfile

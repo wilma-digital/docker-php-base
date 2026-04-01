@@ -1,10 +1,10 @@
 # PHP Base Image (WIP)
 
-This Repo contains the build instructions for the PHP base image (bullseye and bookworm). All PHP images should inherit from this image.
+This Repo contains the build instructions for the PHP base image (bookworm and trixie). All PHP images should inherit from this image.
 
 ## build image
 
-cd src/trixie/src &&  docker buildx create --use &&  docker buildx build --progress=plain --platform linux/amd64,linux/arm64 --push -t docker.io/openmage/php-base:trixie .
+cd src/trixie/src &&  docker buildx create --use &&  docker buildx build --progress=plain --platform linux/amd64,linux/arm64 --push -t docker.io/wilmadigital/php-base:trixie .
 
 
 ## Documentation
