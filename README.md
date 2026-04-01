@@ -31,7 +31,7 @@ All notable changes to this project will be documented in this section.
 
 ### 2026-04-01
 - updated MozJPEG to 4.1.1
-
+- updated Imagick to 7.1.2-18
 
 ### 2025-11-20
 
